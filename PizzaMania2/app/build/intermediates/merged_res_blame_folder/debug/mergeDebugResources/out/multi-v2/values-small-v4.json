@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.kosala.pizza_mania.app-mergeDebugResources-33:/values-small-v4/values-small-v4.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\ASUS4\\.gradle\\caches\\8.13\\transforms\\c4e70e887f52082eb2120633c7e9c4f9\\transformed\\material-1.12.0\\res\\values-small-v4\\values-small-v4.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,128,198,270",
+                        "endColumns": "72,69,71,69",
+                        "endOffsets": "123,193,265,335"
+                    }
+                }
+            ]
+        }
+    ]
+}
