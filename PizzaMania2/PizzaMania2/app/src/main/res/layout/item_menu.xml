@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/card_background"
+        android:padding="16dp">
+
+        <!-- Pizza Image -->
+        <ImageView
+            android:id="@+id/ivPizza"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pizza_logo"
+            android:background="@drawable/bg_img_circle"
+            android:clipToOutline="true"
+            android:contentDescription="Pizza Image" />
+
+        <!-- Pizza Name -->
+         <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/ivPizza"
+            android:layout_marginStart="16dp"
+            android:text="🍕 Cheesy Delight"
+            android:textSize="18sp"
+            android:textColor="#FFC107"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:singleLine="true" />
+
+        <!-- Price -->
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvName"
+            android:layout_toEndOf="@id/ivPizza"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="6dp"
+            android:text="💵 Rs 1700"
+            android:textSize="15sp"
+            android:textColor="#4CAF50" />
+
+        <!-- Delete Button -->
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/bin"
+            app:tint="#FF2B2B"
+            android:contentDescription="Delete Pizza"
+            android:padding="8dp"
+            android:scaleType="centerInside" />
+
+        <!-- Edit Button -->
+        <ImageButton
+            android:id="@+id/btnEdit"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_toStartOf="@id/btnDelete"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/changes"
+            app:tint="#52FF00"
+            android:contentDescription="Edit Pizza"
+            android:padding="8dp"
+            android:scaleType="centerInside" />
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
