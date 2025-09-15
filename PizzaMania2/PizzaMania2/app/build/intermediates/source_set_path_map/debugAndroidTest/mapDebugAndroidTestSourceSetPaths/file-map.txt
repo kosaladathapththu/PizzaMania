@@ -1,0 +1,6 @@
+com.kosala.pizza_mania.test.app-annotation-experimental-1.4.0-0 C:\Users\ASUS4\.gradle\caches\8.13\transforms\3c993ff99271bd9d9b64b25b9d0c2d16\transformed\annotation-experimental-1.4.0\res
+com.kosala.pizza_mania.test.app-core-1.5.0-1 C:\Users\ASUS4\.gradle\caches\8.13\transforms\991e43d1ef28c7475bcfae0d10224a27\transformed\core-1.5.0\res
+com.kosala.pizza_mania.test.app-androidTest-2 D:\Working\PizzaMania2\PizzaMania2\app\build\generated\res\resValues\androidTest\debug
+com.kosala.pizza_mania.test.app-mergeDebugAndroidTestResources-3 D:\Working\PizzaMania2\PizzaMania2\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.kosala.pizza_mania.test.app-mergeDebugAndroidTestResources-4 D:\Working\PizzaMania2\PizzaMania2\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.kosala.pizza_mania.test.app-debugAndroidTest-5 D:\Working\PizzaMania2\PizzaMania2\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

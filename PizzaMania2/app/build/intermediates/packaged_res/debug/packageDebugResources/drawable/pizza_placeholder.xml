@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Pizza Slice Circle -->
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2z" />
+
+    <!-- Pizza Slice Triangle -->
+    <path
+        android:fillColor="#FFF176"
+        android:pathData="M12,4l6,16 -6,-4 -6,4z" />
+
+    <!-- Cheese Dots -->
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M12,9a1,1 0 1,0 0.001,2A1,1 0 1,0 12,9z" />
+
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M14.5,13a1,1 0 1,0 0.001,2A1,1 0 1,0 14.5,13z" />
+
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M9.5,13a1,1 0 1,0 0.001,2A1,1 0 1,0 9.5,13z" />
+</vector>

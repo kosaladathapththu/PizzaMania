@@ -1,0 +1,5 @@
+com.kosala.pizza_mania.test.app-core-1.7.0-0 C:\Users\ASUS4\.gradle\caches\8.13\transforms\ecb2cb22f971e78579a25a0fa358a32b\transformed\core-1.7.0\res
+com.kosala.pizza_mania.test.app-androidTest-1 D:\Working\PizzaMania2\PizzaMania2\app\build\generated\res\resValues\androidTest\debug
+com.kosala.pizza_mania.test.app-mergeDebugAndroidTestResources-2 D:\Working\PizzaMania2\PizzaMania2\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.kosala.pizza_mania.test.app-mergeDebugAndroidTestResources-3 D:\Working\PizzaMania2\PizzaMania2\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.kosala.pizza_mania.test.app-debugAndroidTest-4 D:\Working\PizzaMania2\PizzaMania2\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

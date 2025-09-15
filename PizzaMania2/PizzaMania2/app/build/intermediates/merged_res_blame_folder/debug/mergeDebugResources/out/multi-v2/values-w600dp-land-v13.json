@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.kosala.pizza_mania.app-mergeDebugResources-45:/values-w600dp-land-v13/values-w600dp-land-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\ASUS4\\.gradle\\caches\\8.13\\transforms\\76f346e838238cee27c12a67634aa67c\\transformed\\material-1.9.0\\res\\values-w600dp-land-v13\\values-w600dp-land-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "54",
+                        "endOffsets": "105"
+                    }
+                }
+            ]
+        }
+    ]
+}

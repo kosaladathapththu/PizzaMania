@@ -1,0 +1,28 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.kosala.pizza_mania.test.app-mergeDebugAndroidTestResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\ASUS4\\.gradle\\caches\\8.13\\transforms\\ecb2cb22f971e78579a25a0fa358a32b\\transformed\\core-1.7.0\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "4,11",
+                        "startColumns": "0,0",
+                        "startOffsets": "142,510",
+                        "endLines": "10,17",
+                        "endColumns": "8,8",
+                        "endOffsets": "509,875"
+                    },
+                    "to": {
+                        "startLines": "2,9",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,427",
+                        "endLines": "8,15",
+                        "endColumns": "8,8",
+                        "endOffsets": "422,792"
+                    }
+                }
+            ]
+        }
+    ]
+}
