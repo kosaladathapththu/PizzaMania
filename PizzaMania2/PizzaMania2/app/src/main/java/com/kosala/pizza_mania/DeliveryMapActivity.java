@@ -1,15 +1,11 @@
 package com.kosala.pizza_mania;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -21,7 +17,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.kosala.pizza_mania.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,13 +25,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class DeliveryMapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private double customerLat, customerLng, branchLat, branchLng;
     private static final String TAG = "DeliveryMapActivity";
+
+    private Button btnBackHome; // 🔹 Back to home button
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,16 @@ public class DeliveryMapActivity extends FragmentActivity implements OnMapReadyC
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) mapFragment.getMapAsync(this);
+
+        // 🔹 Back Button setup
+        btnBackHome = findViewById(R.id.btnBackHome);
+        btnBackHome.setOnClickListener(v -> {
+            // Go back to MainActivity which shows HomeFragment
+            Intent intent = new Intent(DeliveryMapActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
     @Override

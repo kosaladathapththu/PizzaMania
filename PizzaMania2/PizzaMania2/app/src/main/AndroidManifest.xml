@@ -57,6 +57,8 @@
 
         <activity android:name=".UpdatePizzaActivity" />
 
+        <activity android:name=".ManageOrdersActivity" />
+
 
 
         <!-- 🔹 Customer Dashboard -->

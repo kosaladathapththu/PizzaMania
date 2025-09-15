@@ -36,9 +36,9 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminDashboardActivity.this, ManageUsersActivity.class))
         );
 
-//        cardManageOrders.setOnClickListener(v ->
-//                startActivity(new Intent(AdminDashboardActivity.this, ManageOrdersActivity.class))
-//        );
+        cardManageOrders.setOnClickListener(v ->
+                startActivity(new Intent(AdminDashboardActivity.this, ManageOrdersActivity.class))
+        );
 
         cardManageMenu.setOnClickListener(v ->
                 startActivity(new Intent(AdminDashboardActivity.this, ManageMenuActivity.class))

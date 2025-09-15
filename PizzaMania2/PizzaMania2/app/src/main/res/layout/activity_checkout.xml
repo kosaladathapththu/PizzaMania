@@ -21,14 +21,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"/>
 
-        <!-- RadioGroup ensures a single logical selection (we control checks in code) -->
+        <!-- RadioGroup for payment options -->
         <RadioGroup
             android:id="@+id/rgPaymentMethod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Cash on Delivery card -->
+            <!-- COD Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardCOD"
                 android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Online Payment card -->
+            <!-- Online Payment Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardOnline"
                 android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card Payment card -->
+            <!-- Card Payment Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardCardPayment"
                 android:layout_width="match_parent"
@@ -132,7 +132,6 @@
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
         </RadioGroup>
 
         <!-- Card Details (visible only when Card Payment selected) -->
@@ -232,17 +231,41 @@
                 android:layout_marginBottom="12dp" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnPay"
-            android:text="Conform"
-            android:backgroundTint="#45A000"
-            android:textColor="#FFFFFF"
+        <!-- Buttons for Delivery and Pickup -->
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:padding="12dp"
-            android:textAllCaps="false"
-            android:textSize="16sp" />
+            android:weightSum="2"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnDelivery"
+                android:text="Delivery"
+                android:backgroundTint="#45A000"
+                android:textColor="#FFFFFF"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:padding="12dp"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btnPickup"
+                android:text="Pickup"
+                android:backgroundTint="#FF5722"
+                android:textColor="#FFFFFF"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:padding="12dp"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

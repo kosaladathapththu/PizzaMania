@@ -67,6 +67,20 @@ dependencies {
 
     // OkHttp for HTTP requests
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-// Gson (for JSON parsing if needed)
+
+    // Gson (for JSON parsing)
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // 👉 Room Database
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    // (If you switch to Kotlin: kapt "androidx.room:room-compiler:2.6.1")
+
+    implementation("com.google.firebase:firebase-firestore:25.1.1")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+// if you want userId
+
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
+
+
 }

@@ -42,7 +42,6 @@ import com.kosala.pizza_mania.models.Pizza;
 import com.kosala.pizza_mania.models.Category;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -174,12 +173,13 @@ public class HomeFragment extends Fragment {
             tvItemPrice.setText("Rs. 750 - Rs. 1200");
         }
 
-        // Set placeholder image (you can update this when you have actual images)
         ivItemImage.setImageResource(R.drawable.pizzaq);
 
         btnClose.setOnClickListener(v -> dialog.dismiss());
 
         btnAddToCart.setOnClickListener(v -> {
+            // ✅ Add to CartHelper instead of just Toast
+            CartHelper.addToCart(pizza);
             Toast.makeText(getContext(), pizza.getName() + " added to cart!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });

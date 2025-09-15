@@ -5,147 +5,161 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
-import com.kosala.pizza_mania.models.Pizza;
+import androidx.annotation.NonNull;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.kosala.pizza_mania.models.CartItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CartDatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DB_NAME = "pizza_cart.db";
-    private static final int DB_VERSION = 1;
+    private static final String DATABASE_NAME = "pizza_cart.db";
+    private static final int DATABASE_VERSION = 1;
 
-    private static final String TABLE_CART = "cart_items";
-    private static final String COL_ID = "id";
-    private static final String COL_NAME = "name";
-    private static final String COL_PRICE = "price";
-    private static final String COL_IMAGE = "imageUrl";
-    private static final String COL_QTY = "quantity";
+    private static final String TABLE_CART = "cart";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_PRICE = "price";
+    private static final String COLUMN_QUANTITY = "quantity";
+
+    private final Context context;
 
     public CartDatabaseHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE " + TABLE_CART + " ("
-                + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COL_NAME + " TEXT UNIQUE, "
-                + COL_PRICE + " REAL, "
-                + COL_IMAGE + " TEXT, "
-                + COL_QTY + " INTEGER)";
-        db.execSQL(sql);
+        String CREATE_CART_TABLE = "CREATE TABLE " + TABLE_CART + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_NAME + " TEXT UNIQUE, "
+                + COLUMN_PRICE + " REAL, "
+                + COLUMN_QUANTITY + " INTEGER)";
+        db.execSQL(CREATE_CART_TABLE);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
         onCreate(db);
     }
 
-    /** Add pizza to cart. If exists, increase quantity */
-    public void addToCart(Pizza pizza) {
+    // --- SQLite CRUD Methods ---
+    public void addToCart(CartItem item) {
         SQLiteDatabase db = getWritableDatabase();
-        try (Cursor c = db.query(TABLE_CART, new String[]{COL_ID, COL_QTY},
-                COL_NAME + "=?", new String[]{pizza.getName()},
-                null, null, null)) {
+        Cursor cursor = db.query(TABLE_CART,
+                new String[]{COLUMN_QUANTITY},
+                COLUMN_NAME + "=?",
+                new String[]{item.getName()},
+                null, null, null);
 
-            if (c != null && c.moveToFirst()) {
-                int existingQty = c.getInt(c.getColumnIndexOrThrow(COL_QTY));
-                int addQty = Math.max(1, pizza.getQuantity());
-                int newQty = existingQty + addQty;
-
-                ContentValues cv = new ContentValues();
-                cv.put(COL_QTY, newQty);
-                db.update(TABLE_CART, cv, COL_NAME + "=?", new String[]{pizza.getName()});
-            } else {
-                ContentValues cv = new ContentValues();
-                cv.put(COL_NAME, pizza.getName());
-                cv.put(COL_PRICE, pizza.getPrice());
-                cv.put(COL_IMAGE, pizza.getImageUrl());
-                cv.put(COL_QTY, Math.max(1, pizza.getQuantity()));
-                db.insert(TABLE_CART, null, cv);
-            }
-        } finally {
-            db.close();
+        if (cursor != null && cursor.moveToFirst()) {
+            int oldQty = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_QUANTITY));
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_QUANTITY, oldQty + item.getQuantity());
+            db.update(TABLE_CART, values, COLUMN_NAME + "=?", new String[]{item.getName()});
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME, item.getName());
+            values.put(COLUMN_PRICE, item.getPrice());
+            values.put(COLUMN_QUANTITY, item.getQuantity());
+            db.insert(TABLE_CART, null, values);
         }
+
+        if (cursor != null) cursor.close();
+        db.close();
     }
 
-    /** Get all items in the cart */
-    public List<Pizza> getCartItems() {
-        List<Pizza> list = new ArrayList<>();
+    public List<CartItem> getAllCartItems() {
+        List<CartItem> list = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        try (Cursor c = db.query(TABLE_CART, null, null, null, null, null, null)) {
-            if (c != null) {
-                while (c.moveToNext()) {
-                    String name = c.getString(c.getColumnIndexOrThrow(COL_NAME));
-                    double price = c.getDouble(c.getColumnIndexOrThrow(COL_PRICE));
-                    String image = c.getString(c.getColumnIndexOrThrow(COL_IMAGE));
-                    int qty = c.getInt(c.getColumnIndexOrThrow(COL_QTY));
+        Cursor cursor = db.query(TABLE_CART, null, null, null, null, null, null);
 
-                    Pizza p = new Pizza(name, price, image); // ✅ Correct constructor
-                    p.setQuantity(qty);
-                    list.add(p);
-                }
-            }
-        } finally {
-            db.close();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
+                double price = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRICE));
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_QUANTITY));
+                list.add(new CartItem(name, price, quantity));
+            } while (cursor.moveToNext());
         }
+
+        if (cursor != null) cursor.close();
+        db.close();
         return list;
     }
 
-    /** Update quantity for an item */
-    public void updateQuantity(String name, int quantity) {
-        SQLiteDatabase db = getWritableDatabase();
-        try {
-            if (quantity <= 0) {
-                db.delete(TABLE_CART, COL_NAME + "=?", new String[]{name});
-            } else {
-                ContentValues cv = new ContentValues();
-                cv.put(COL_QTY, quantity);
-                db.update(TABLE_CART, cv, COL_NAME + "=?", new String[]{name});
-            }
-        } finally {
-            db.close();
+    public double getTotalPrice() {
+        double total = 0;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SUM(" + COLUMN_PRICE + " * " + COLUMN_QUANTITY + ") FROM " + TABLE_CART, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            total = cursor.getDouble(0);
         }
+        if (cursor != null) cursor.close();
+        db.close();
+        return total;
     }
 
-    /** Remove an item from cart */
-    public void removeItem(String name) {
-        SQLiteDatabase db = getWritableDatabase();
-        try {
-            db.delete(TABLE_CART, COL_NAME + "=?", new String[]{name});
-        } finally {
-            db.close();
-        }
-    }
-
-    /** Clear entire cart */
     public void clearCart() {
         SQLiteDatabase db = getWritableDatabase();
-        try {
-            db.delete(TABLE_CART, null, null);
-        } finally {
-            db.close();
-        }
+        db.delete(TABLE_CART, null, null);
+        db.close();
     }
 
-    /** Calculate total price of cart */
-    public double getTotal() {
-        double total = 0.0;
-        SQLiteDatabase db = getReadableDatabase();
-        try (Cursor c = db.rawQuery("SELECT " + COL_PRICE + ", " + COL_QTY + " FROM " + TABLE_CART, null)) {
-            if (c != null) {
-                while (c.moveToNext()) {
-                    double price = c.getDouble(0);
-                    int qty = c.getInt(1);
-                    total += price * qty;
-                }
-            }
-        } finally {
-            db.close();
+    // --- Firestore Integration ---
+    public void pushCartToFirestore(@NonNull Map<String, Object> deliveryLocation,
+                                    @NonNull String branchId,
+                                    @NonNull Runnable onSuccess,
+                                    @NonNull Runnable onFailure) {
+
+        List<CartItem> cartItems = getAllCartItems();
+        if (cartItems.isEmpty()) {
+            Toast.makeText(context, "Cart is empty ❌", Toast.LENGTH_SHORT).show();
+            onFailure.run();
+            return;
         }
-        return total;
+
+        List<Map<String, Object>> itemsList = new ArrayList<>();
+        double total = 0;
+
+        for (CartItem item : cartItems) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", item.getName());
+            map.put("price", item.getPrice());
+            map.put("quantity", item.getQuantity());
+            itemsList.add(map);
+            total += item.getPrice() * item.getQuantity();
+        }
+
+        Map<String, Object> order = new HashMap<>();
+        String customerId = FirebaseAuth.getInstance().getUid();
+        if (customerId == null) customerId = "guest";
+
+        order.put("customerId", customerId);
+        order.put("items", itemsList);
+        order.put("totalPrice", total);
+        order.put("deliveryLocation", deliveryLocation);
+        order.put("branchId", branchId);
+        order.put("status", "pending");
+        order.put("createdAt", FieldValue.serverTimestamp());
+
+        FirebaseFirestore.getInstance()
+                .collection("orders")
+                .add(order)
+                .addOnSuccessListener(docRef -> {
+                    clearCart();
+                    onSuccess.run();
+                })
+                .addOnFailureListener(e -> onFailure.run());
     }
 }

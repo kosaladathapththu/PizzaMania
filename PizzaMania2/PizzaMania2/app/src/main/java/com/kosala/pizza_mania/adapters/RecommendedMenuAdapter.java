@@ -13,9 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kosala.pizza_mania.R;
 import com.kosala.pizza_mania.models.Pizza;
-import com.kosala.pizza_mania.utils.CartDatabaseHelper;
+import com.kosala.pizza_mania.models.CartItem;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class RecommendedMenuAdapter extends RecyclerView.Adapter<RecommendedMenu
 
     private final Context context;
     private final List<Pizza> pizzaList;
-    private final CartDatabaseHelper dbHelper;
+    private final FirebaseFirestore db;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -33,13 +34,13 @@ public class RecommendedMenuAdapter extends RecyclerView.Adapter<RecommendedMenu
     public RecommendedMenuAdapter(Context context, List<Pizza> pizzaList) {
         this.context = context;
         this.pizzaList = pizzaList;
-        this.dbHelper = new CartDatabaseHelper(context);
+        this.db = FirebaseFirestore.getInstance();
     }
 
     public RecommendedMenuAdapter(Context context, List<Pizza> pizzaList, OnItemClickListener listener) {
         this.context = context;
         this.pizzaList = pizzaList;
-        this.dbHelper = new CartDatabaseHelper(context);
+        this.db = FirebaseFirestore.getInstance();
         this.listener = listener;
     }
 
@@ -66,14 +67,12 @@ public class RecommendedMenuAdapter extends RecyclerView.Adapter<RecommendedMenu
             holder.ivPizza.setImageResource(R.drawable.placeholder);
         }
 
-        // Add click listener for the entire item
+        // Item click
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onItemClick(pizza);
-            }
+            if (listener != null) listener.onItemClick(pizza);
         });
 
-        // Add visual feedback on touch
+        // Visual touch feedback
         holder.itemView.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case android.view.MotionEvent.ACTION_DOWN:
@@ -87,7 +86,7 @@ public class RecommendedMenuAdapter extends RecyclerView.Adapter<RecommendedMenu
             return false;
         });
 
-        // Increase/Decrease quantity
+        // Quantity buttons
         holder.btnIncrease.setOnClickListener(v -> {
             int qty = Integer.parseInt(holder.tvQuantity.getText().toString());
             holder.tvQuantity.setText(String.valueOf(qty + 1));
@@ -97,12 +96,33 @@ public class RecommendedMenuAdapter extends RecyclerView.Adapter<RecommendedMenu
             if (qty > 1) holder.tvQuantity.setText(String.valueOf(qty - 1));
         });
 
-        // Add to cart
+        // Add to Firestore cart
         holder.btnAddToCart.setOnClickListener(v -> {
             int qty = Integer.parseInt(holder.tvQuantity.getText().toString());
             pizza.setQuantity(qty);
-            dbHelper.addToCart(pizza);  // ✅ SQLite add
-            Toast.makeText(context, pizza.getName() + " x" + qty + " added to cart!", Toast.LENGTH_SHORT).show();
+
+            CartItem cartItem = new CartItem(pizza.getName(), pizza.getPrice(), pizza.getQuantity());
+
+            // Firestore add or update
+            db.collection("cart")
+                    .document(cartItem.getName()) // Using name as ID
+                    .get()
+                    .addOnSuccessListener(doc -> {
+                        if (doc.exists()) {
+                            // Already in cart → update quantity
+                            Long existingQty = doc.getLong("quantity");
+                            if (existingQty != null) {
+                                cartItem.setQuantity(cartItem.getQuantity() + existingQty.intValue());
+                            }
+                        }
+                        // Save updated quantity
+                        db.collection("cart").document(cartItem.getName())
+                                .set(cartItem)
+                                .addOnSuccessListener(aVoid -> Toast.makeText(context,
+                                        cartItem.getName() + " x" + cartItem.getQuantity() + " added to cart!", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e -> Toast.makeText(context,
+                                        "Failed to add to cart!", Toast.LENGTH_SHORT).show());
+                    });
         });
     }
 

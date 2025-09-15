@@ -7,24 +7,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.kosala.pizza_mania.R;
-import com.kosala.pizza_mania.models.Pizza;
-import com.kosala.pizza_mania.utils.CartDatabaseHelper;
+import com.kosala.pizza_mania.models.CartItem;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<Pizza> cartList;
-    private final CartDatabaseHelper dbHelper;
+    private final List<CartItem> cartList;
     private final Runnable refreshCallback;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public CartAdapter(Context context, List<Pizza> cartList, CartDatabaseHelper dbHelper, Runnable refreshCallback) {
+    public CartAdapter(Context context, List<CartItem> cartList, Runnable refreshCallback) {
         this.context = context;
         this.cartList = cartList;
-        this.dbHelper = dbHelper;
         this.refreshCallback = refreshCallback;
     }
 
@@ -37,32 +39,46 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Pizza pizza = cartList.get(position);
+        CartItem item = cartList.get(position);
 
-        holder.tvName.setText(pizza.getName());
-        holder.tvQuantity.setText(String.valueOf(pizza.getQuantity()));
-        holder.tvPrice.setText("Rs " + (pizza.getPrice() * pizza.getQuantity()));
+        holder.tvName.setText(item.getName());
+        holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
+        holder.tvPrice.setText("Rs " + (item.getPrice() * item.getQuantity()));
 
+        // Increase quantity
         holder.btnIncrease.setOnClickListener(v -> {
-            int qty = pizza.getQuantity() + 1;
-            dbHelper.updateQuantity(pizza.getName(), qty);
-            refreshCallback.run(); // Reload from DB
+            int newQty = item.getQuantity() + 1;
+            db.collection("cart").document(item.getName())
+                    .update("quantity", newQty)
+                    .addOnSuccessListener(aVoid -> refreshCallback.run())
+                    .addOnFailureListener(e -> Toast.makeText(context, "Failed to update quantity", Toast.LENGTH_SHORT).show());
         });
 
+        // Decrease quantity
         holder.btnDecrease.setOnClickListener(v -> {
-            int qty = pizza.getQuantity() - 1;
-            if (qty <= 0) {
-                dbHelper.removeItem(pizza.getName());
+            int newQty = item.getQuantity() - 1;
+            if (newQty <= 0) {
+                db.collection("cart").document(item.getName())
+                        .delete()
+                        .addOnSuccessListener(aVoid -> refreshCallback.run())
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed to remove item", Toast.LENGTH_SHORT).show());
             } else {
-                dbHelper.updateQuantity(pizza.getName(), qty);
+                db.collection("cart").document(item.getName())
+                        .update("quantity", newQty)
+                        .addOnSuccessListener(aVoid -> refreshCallback.run())
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed to update quantity", Toast.LENGTH_SHORT).show());
             }
-            refreshCallback.run();
         });
 
+        // Delete item
         holder.btnDelete.setOnClickListener(v -> {
-            dbHelper.removeItem(pizza.getName());
-            Toast.makeText(context, pizza.getName() + " removed", Toast.LENGTH_SHORT).show();
-            refreshCallback.run();
+            db.collection("cart").document(item.getName())
+                    .delete()
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(context, item.getName() + " removed", Toast.LENGTH_SHORT).show();
+                        refreshCallback.run();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(context, "Failed to remove item", Toast.LENGTH_SHORT).show());
         });
     }
 

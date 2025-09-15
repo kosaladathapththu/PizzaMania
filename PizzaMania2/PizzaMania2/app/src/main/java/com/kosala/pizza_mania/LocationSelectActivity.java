@@ -27,12 +27,18 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.kosala.pizza_mania.models.CartItem;
 import com.kosala.pizza_mania.utils.CartDatabaseHelper;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class LocationSelectActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -46,7 +52,7 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
     private FusedLocationProviderClient fusedLocationClient;
     private CartDatabaseHelper dbHelper;
 
-    // Example branch location (TODO: fetch from Firestore dynamically)
+    // Example branch location (TODO: fetch nearest from Firestore dynamically)
     private double branchLat = 6.9271; // Colombo
     private double branchLng = 79.8612;
 
@@ -59,7 +65,6 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
         btnMyLocation = findViewById(R.id.btnMyLocation);
         dbHelper = new CartDatabaseHelper(this);
 
-        // Initialize Places SDK
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
         }
@@ -76,31 +81,14 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
 
         setupPlacesAutocomplete();
 
-        // Confirm button → Start Delivery Flow
+        // ✅ Confirm button → Save order to Firestore
         btnConfirm.setOnClickListener(v -> {
             if (selectedLatLng == null) {
                 Toast.makeText(this, "Please choose a location!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            try {
-                dbHelper.clearCart(); // Clear cart after payment
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            Toast.makeText(this,
-                    "Payment successful ✅\nDelivery starting...",
-                    Toast.LENGTH_LONG).show();
-
-            // Start Delivery Progress screen
-            Intent i = new Intent(LocationSelectActivity.this, DeliveryProgressActivity.class);
-            i.putExtra("customer_lat", selectedLatLng.latitude);
-            i.putExtra("customer_lng", selectedLatLng.longitude);
-            i.putExtra("branch_lat", branchLat);
-            i.putExtra("branch_lng", branchLng);
-            startActivity(i);
-            finish();
+            saveOrderToFirestore();
         });
 
         btnMyLocation.setOnClickListener(v -> goToMyLocation());
@@ -131,6 +119,64 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
                 }
             });
         }
+    }
+
+    private void saveOrderToFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // ✅ Get cart items and total
+        List<CartItem> cartItems = CartManager.getInstance().getCartItems();
+        double totalPrice = CartManager.getInstance().getTotal();
+
+        // 🔄 Convert CartItems to Firestore-friendly maps
+        List<Map<String, Object>> itemsList = new java.util.ArrayList<>();
+        for (CartItem item : cartItems) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", item.getName());
+            map.put("price", item.getPrice());
+            map.put("quantity", item.getQuantity());
+            itemsList.add(map);
+        }
+
+        // Build order data
+        Map<String, Object> order = new HashMap<>();
+        String customerId = FirebaseAuth.getInstance().getUid(); // 🔹 real Firebase user ID
+        if (customerId == null) customerId = "guest"; // fallback
+        order.put("customerId", customerId);
+        order.put("items", itemsList);
+        order.put("totalPrice", totalPrice);
+
+        Map<String, Object> deliveryLocation = new HashMap<>();
+        deliveryLocation.put("lat", selectedLatLng.latitude);
+        deliveryLocation.put("lng", selectedLatLng.longitude);
+        deliveryLocation.put("address", getAddressFromLatLng(selectedLatLng));
+        order.put("deliveryLocation", deliveryLocation);
+
+        // 🔹 TODO: dynamic nearest branch, for now hardcoded
+        order.put("branchId", "Colombo Branch");
+        order.put("status", "pending");
+        order.put("createdAt", FieldValue.serverTimestamp());
+
+        db.collection("orders")
+                .add(order)
+                .addOnSuccessListener(docRef -> {
+                    // ✅ Clear cart
+                    CartManager.getInstance().clearCart();
+
+                    Toast.makeText(this, "Order placed successfully! ✅", Toast.LENGTH_LONG).show();
+
+                    // Go to Delivery screen
+                    Intent i = new Intent(LocationSelectActivity.this, DeliveryProgressActivity.class);
+                    i.putExtra("customer_lat", selectedLatLng.latitude);
+                    i.putExtra("customer_lng", selectedLatLng.longitude);
+                    i.putExtra("branch_lat", branchLat);
+                    i.putExtra("branch_lng", branchLng);
+                    startActivity(i);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to place order ❌", Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override

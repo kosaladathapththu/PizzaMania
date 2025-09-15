@@ -2,6 +2,7 @@ package com.kosala.pizza_mania;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -15,7 +16,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.kosala.pizza_mania.models.Branch;
 import com.kosala.pizza_mania.utils.CartDatabaseHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -24,13 +31,16 @@ public class CheckoutActivity extends AppCompatActivity {
     private MaterialCardView cardCOD, cardOnline, cardCardPayment;
     private LinearLayout llCardDetails;
     private EditText etCardName, etCardNumber, etExpiry, etCVV;
-    private Button btnPay;
+    private Button btnDelivery, btnPickup;
     private CartDatabaseHelper dbHelper;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+
+        db = FirebaseFirestore.getInstance();
 
         rgPayment = findViewById(R.id.rgPaymentMethod);
         rbCOD = findViewById(R.id.rbCOD);
@@ -46,7 +56,9 @@ public class CheckoutActivity extends AppCompatActivity {
         etCardNumber = findViewById(R.id.etCardNumber);
         etExpiry = findViewById(R.id.etExpiry);
         etCVV = findViewById(R.id.etCVV);
-        btnPay = findViewById(R.id.btnPay);
+
+        btnDelivery = findViewById(R.id.btnDelivery);
+        btnPickup = findViewById(R.id.btnPickup);
 
         dbHelper = new CartDatabaseHelper(this);
 
@@ -69,7 +81,8 @@ public class CheckoutActivity extends AppCompatActivity {
             setCardHighlight(cardCardPayment, checkedId == R.id.rbCard, highlightColor);
         });
 
-        btnPay.setOnClickListener(v -> processPayment());
+        btnDelivery.setOnClickListener(v -> processDelivery());
+        btnPickup.setOnClickListener(v -> processPickup());
     }
 
     private void setCardHighlight(MaterialCardView card, boolean checked, int color) {
@@ -88,7 +101,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 
-    private void processPayment() {
+    private void processDelivery() {
         int checkedId = rgPayment.getCheckedRadioButtonId();
         if (checkedId == -1) {
             Toast.makeText(this, "Select payment method!", Toast.LENGTH_SHORT).show();
@@ -105,25 +118,57 @@ public class CheckoutActivity extends AppCompatActivity {
                 Toast.makeText(this, "Enter all card details!", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            if (card.length() < 12 || card.length() > 19 || !card.matches("\\d+")) {
-                Toast.makeText(this, "Invalid card number!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (!expiry.matches("(0[1-9]|1[0-2])\\/\\d{2}")) {
-                Toast.makeText(this, "Invalid expiry format (MM/YY)", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (cvv.length() < 3 || cvv.length() > 4 || !cvv.matches("\\d+")) {
-                Toast.makeText(this, "Invalid CVV!", Toast.LENGTH_SHORT).show();
-                return;
-            }
         }
 
-        // ✅ Now open map screen
+        // Open delivery location screen
         Intent intent = new Intent(this, LocationSelectActivity.class);
         startActivity(intent);
+    }
+
+    private void processPickup() {
+        // ✅ Open Google Maps to nearest branch
+        db.collection("branches")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    Branch nearest = null;
+                    if (!querySnapshot.isEmpty()) {
+                        List<Branch> branches = new ArrayList<>();
+                        for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                            Branch b = new Branch();
+                            b.setId(doc.getId());
+                            b.setName(doc.getString("name"));
+                            Double lat = doc.getDouble("lat");
+                            Double lng = doc.getDouble("lng");
+                            if (lat != null && lng != null) {
+                                b.setLat(lat);
+                                b.setLng(lng);
+                                branches.add(b);
+                            }
+                        }
+
+                        if (!branches.isEmpty()) nearest = branches.get(0);
+                    }
+
+                    if (nearest == null) {
+                        nearest = new Branch("Colombo Branch", 6.9271, 79.8612);
+                    }
+
+                    String uri = "https://www.google.com/maps/dir/?api=1&destination="
+                            + nearest.getLat() + "," + nearest.getLng()
+                            + "&travelmode=driving";
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    intent.setPackage("com.google.android.apps.maps");
+                    startActivity(intent);
+
+                })
+                .addOnFailureListener(e -> {
+                    Branch fallback = new Branch("Colombo Branch", 6.9271, 79.8612);
+                    String uri = "https://www.google.com/maps/dir/?api=1&destination="
+                            + fallback.getLat() + "," + fallback.getLng()
+                            + "&travelmode=driving";
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    intent.setPackage("com.google.android.apps.maps");
+                    startActivity(intent);
+                });
     }
 }
