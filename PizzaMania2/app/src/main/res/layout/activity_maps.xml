@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Map -->
+
+    <!-- Floating buttons -->
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="235dp"
+        android:layout_height="255dp"
+        android:layout_gravity="bottom|end"
+        android:gravity="end"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <Button
+            android:id="@+id/btnMyLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="📍 My Location" />
+
+        <Button
+            android:id="@+id/btnNearest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="🧭 Nearest Branch" />
+
+        <Button
+            android:id="@+id/btnDirections"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="🚗 Directions" />
+
+        <!-- New Open Menu Button -->
+        <Button
+            android:id="@+id/btnOpenMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="62dp"
+            android:text="🍕 Open Menu" />
+
+    </LinearLayout>
+</FrameLayout>
