@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 🔹 Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PizzaMania">
+
+        <!-- 🔹 Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCNlm6rJP3L26eBOH_agJm7dRiB0W0KGeM" />
+
+        <!-- 🔹 Login Activity (Launcher) -->
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AuthTheme"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 🔹 Signup Activity -->
+        <activity
+            android:name=".SignupActivity"
+            android:exported="true"
+            android:theme="@style/AuthTheme" />
+
+        <!-- 🔹 Main Activity (Customer Home) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+
+        <!-- 🔹 Admin Dashboard -->
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="true" />
+
+        <activity android:name=".ManageUsersActivity" />
+
+        <activity android:name=".ManageMenuActivity" />
+
+        <activity android:name=".AddPizzaActivity" />
+
+        <activity android:name=".UpdatePizzaActivity" />
+
+        <activity android:name=".ManageOrdersActivity" />
+
+
+
+        <!-- 🔹 Customer Dashboard -->
+        <activity
+            android:name=".CustomerDashboardActivity"
+            android:exported="true" />
+
+
+        <!-- 🔹 Cart Activity -->
+        <activity android:name=".CartActivity" android:exported="false"/>
+
+        <!-- 🔹 Checkout Activity -->
+        <activity android:name=".CheckoutActivity" />
+
+        <!-- 🔹 Location Select Activity -->
+        <activity android:name=".LocationSelectActivity" />
+
+        <!-- Delivery Progress (GIF animations) -->
+        <activity android:name=".DeliveryProgressActivity" />
+
+        <!-- Delivery Map (route tracking) -->
+        <activity android:name=".DeliveryMapActivity" />
+
+
+    </application>
+
+</manifest>

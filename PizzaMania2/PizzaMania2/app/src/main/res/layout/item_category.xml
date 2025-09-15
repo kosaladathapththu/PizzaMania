@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_margin="6dp"
+    android:gravity="center"
+    android:background="@drawable/category_unselected_bg"
+    android:clickable="true"
+    android:focusable="true"
+    android:minWidth="80dp">
+
+    <ImageView
+        android:id="@+id/ivCategoryIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/pizza_logo"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvCategoryName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pizza"
+        android:textSize="12sp"
+        android:textColor="#000000"
+        android:gravity="center" />
+
+</LinearLayout>

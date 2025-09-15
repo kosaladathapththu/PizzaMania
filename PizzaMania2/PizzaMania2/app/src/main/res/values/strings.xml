@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Pizza Mania</string>
+
+    <!-- Common Auth Strings -->
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+
+    <!-- Messages -->
+    <string name="welcome_message">Welcome to Pizza Mania 🍕</string>
+    <string name="error_invalid_email">Invalid email format</string>
+    <string name="error_password_short">Password too short</string>
+    <string name="signup_success">Account created successfully!</string>
+    <string name="login_success">Login successful!</string>
+</resources>
