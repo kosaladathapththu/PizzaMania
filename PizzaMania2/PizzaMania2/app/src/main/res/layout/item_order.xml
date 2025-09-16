@@ -99,15 +99,15 @@
         </LinearLayout>
 
         <!-- Action Buttons -->
-        <Button
-            android:id="@+id/btnTrackOrder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="#D32F2F"
-            android:text="Track Order"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+<!--        <Button-->
+<!--            android:id="@+id/btnTrackOrder"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:backgroundTint="#D32F2F"-->
+<!--            android:text="Track Order"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            android:textStyle="bold" />-->
 
         <Button
             android:id="@+id/btnUpdate"

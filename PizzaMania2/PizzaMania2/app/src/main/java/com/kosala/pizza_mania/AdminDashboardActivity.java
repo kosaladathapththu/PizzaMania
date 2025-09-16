@@ -21,7 +21,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         // 🌟 Welcome message
         TextView tv = findViewById(R.id.tvAdminWelcome);
-        tv.setText("👑 Welcome Admin! You are logged in.");
+        tv.setText("Welcome Admin! You are logged in.");
 
         // 🎯 Get Cards
         cardSignOut = findViewById(R.id.cardSignOut);

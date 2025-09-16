@@ -3,39 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center"
-    android:background="@android:color/white">
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#FAFAFA">
 
     <TextView
         android:id="@+id/tvSettingsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Account"
-        android:textSize="24sp"
+        android:textSize="26sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="20dp" />
+        android:textColor="#212121"
+        android:layout_marginBottom="40dp" />
+
+    <Button
+        android:id="@+id/btnEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:backgroundTint="#1976D2"
+        android:text="✏️  Edit Profile"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:radius="30dp" />
 
     <Button
         android:id="@+id/btnChangePassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Change Password" />
-
-<!--    <Button-->
-<!--        android:id="@+id/btnNotifications"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Notification Settings"-->
-<!--        android:layout_marginTop="12dp" />-->
+        android:layout_height="48dp"
+        android:backgroundTint="#43A047"
+        android:text="🔒  Change Password"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Log Out"
-        android:layout_marginTop="12dp"
-        android:textColor="@android:color/holo_red_dark" />
-
+        android:layout_height="48dp"
+        android:backgroundTint="#E53935"
+        android:text="🚪  Log Out"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 </LinearLayout>

@@ -1,33 +1,99 @@
 package com.kosala.pizza_mania;
 
-import android.content.Intent;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SettingsFragment extends Fragment {
 
-    public SettingsFragment() { }
+    public SettingsFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
+        Button btnEditProfile = view.findViewById(R.id.btnEditProfile);
         Button btnChangePassword = view.findViewById(R.id.btnChangePassword);
-//        Button btnNotifications = view.findViewById(R.id.btnNotifications);
         Button btnLogout = view.findViewById(R.id.btnLogout);
 
-        // Change Password
-        btnChangePassword.setOnClickListener(v -> {
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            String email = auth.getCurrentUser() != null ? auth.getCurrentUser().getEmail() : null;
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // 🔹 Edit Profile
+        btnEditProfile.setOnClickListener(v -> {
+            if (auth.getCurrentUser() == null) {
+                Toast.makeText(getActivity(), "No user logged in", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Create Dialog
+            View dialogView = LayoutInflater.from(getActivity())
+                    .inflate(R.layout.dialog_edit_profile, null);
+
+            EditText etName = dialogView.findViewById(R.id.etName);
+            EditText etTel = dialogView.findViewById(R.id.etTel);
+            EditText etAddress = dialogView.findViewById(R.id.etAddress);
+
+            // Load current values
+            db.collection("users").document(auth.getUid())
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        if (snapshot.exists()) {
+                            etName.setText(snapshot.getString("name"));
+                            etTel.setText(snapshot.getString("tel"));
+                            etAddress.setText(snapshot.getString("address"));
+                        }
+                    });
+
+            AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setTitle("Edit Profile")
+                    .setView(dialogView)
+                    .setPositiveButton("Save", (d, which) -> {
+                        String name = etName.getText().toString().trim();
+                        String tel = etTel.getText().toString().trim();
+                        String address = etAddress.getText().toString().trim();
+
+                        if (name.isEmpty() || tel.isEmpty() || address.isEmpty()) {
+                            Toast.makeText(getActivity(), "All fields required", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("name", name);
+                        updates.put("tel", tel);
+                        updates.put("address", address);
+
+                        DocumentReference userRef = db.collection("users").document(auth.getUid());
+                        userRef.update(updates)
+                                .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(),
+                                        "Profile updated", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e -> Toast.makeText(getActivity(),
+                                        "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create();
+
+            dialog.show();
+        });
+
+        // 🔹 Change Password
+        btnChangePassword.setOnClickListener(v -> {
+            String email = auth.getCurrentUser() != null ? auth.getCurrentUser().getEmail() : null;
             if (email != null) {
                 auth.sendPasswordResetEmail(email)
                         .addOnCompleteListener(task -> {
@@ -37,7 +103,7 @@ public class SettingsFragment extends Fragment {
                                         Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getActivity(),
-                                        "Failed to send reset email: " + task.getException().getMessage(),
+                                        "Failed: " + task.getException().getMessage(),
                                         Toast.LENGTH_LONG).show();
                             }
                         });
@@ -46,17 +112,10 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-//        // Notifications (placeholder)
-//        btnNotifications.setOnClickListener(v ->
-//                Toast.makeText(getActivity(), "Notification settings coming soon!", Toast.LENGTH_SHORT).show()
-//        );
-
-        // Logout
+        // 🔹 Logout
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            Toast.makeText(getActivity(), "Logged out", Toast.LENGTH_SHORT).show();
             requireActivity().finish();
         });
 

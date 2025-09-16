@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:text="Manage Users"
                     android:textSize="18sp"
-                    android:textColor="#DED51B"
+                    android:textColor="#FFC107"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:text="Manage Orders"
                     android:textSize="18sp"
-                    android:textColor="#1A42CA"
+                    android:textColor="#FFC107"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -130,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:text="Manage Menu"
                     android:textSize="18sp"
-                    android:textColor="#36CA0B"
+                    android:textColor="#FFC107"
                     android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>

@@ -53,7 +53,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage") // ✅ Firebase Storage
+    implementation("com.google.firebase:firebase-storage") // Firebase Storage
 
     // Extra UI components
     implementation("androidx.cardview:cardview:1.0.0")
@@ -71,7 +71,7 @@ dependencies {
     // Gson (for JSON parsing)
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // 👉 Room Database
+    //  Room Database
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     // (If you switch to Kotlin: kapt "androidx.room:room-compiler:2.6.1")
