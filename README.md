@@ -50,9 +50,9 @@ Browse delicious pizzas, add them to your cart, and place orders with ease. Buil
 
 | Home Screen | Cart View | Checkout |
 |:-----------:|:---------:|:--------:|
-| <img src="screenshots/home.png" width="200" alt="Home Screen"/> | <img src="screenshots/cart.png" width="200" alt="Cart View"/> | <img src="screenshots/checkout.png" width="200" alt="Checkout"/> |
+| <img src="WhatsApp Image 2025-09-16 at 13.09.50_4b730c61.jpg" width="200" alt="Home Screen"/> | <img src="screenshots/WhatsApp Image 2025-09-16 at 13.09.52_335d8022.jpg" width="200" alt="Cart View"/> | <img src="screenshots/WhatsApp Image 2025-09-16 at 13.09.51_82a9fe64.jpg" width="200" alt="Checkout"/> |
 
-*Replace with your actual app screenshots*
+
 
 </div>
 
