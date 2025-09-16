@@ -3,8 +3,8 @@ package com.kosala.pizza_mania;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Geocoder;
 import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -31,7 +31,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kosala.pizza_mania.models.CartItem;
-import com.kosala.pizza_mania.utils.CartDatabaseHelper;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -50,9 +49,8 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
     private Button btnConfirm;
     private ImageButton btnMyLocation;
     private FusedLocationProviderClient fusedLocationClient;
-    private CartDatabaseHelper dbHelper;
 
-    // Example branch location (TODO: fetch nearest from Firestore dynamically)
+    // Example branch location (hardcoded for now)
     private double branchLat = 6.9271; // Colombo
     private double branchLng = 79.8612;
 
@@ -63,31 +61,28 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
 
         btnConfirm = findViewById(R.id.btnConfirm);
         btnMyLocation = findViewById(R.id.btnMyLocation);
-        dbHelper = new CartDatabaseHelper(this);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
         }
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.map_container, mapFragment)
                 .commitAllowingStateLoss();
-
         mapFragment.getMapAsync(this);
 
         setupPlacesAutocomplete();
 
-        // ✅ Confirm button → Save order to Firestore
+        // Confirm button → Save order to Firestore
         btnConfirm.setOnClickListener(v -> {
             if (selectedLatLng == null) {
                 Toast.makeText(this, "Please choose a location!", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             saveOrderToFirestore();
         });
 
@@ -124,11 +119,11 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
     private void saveOrderToFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // ✅ Get cart items and total
+        // Get cart items & total
         List<CartItem> cartItems = CartManager.getInstance().getCartItems();
         double totalPrice = CartManager.getInstance().getTotal();
 
-        // 🔄 Convert CartItems to Firestore-friendly maps
+        // Convert CartItems to Firestore-friendly maps
         List<Map<String, Object>> itemsList = new java.util.ArrayList<>();
         for (CartItem item : cartItems) {
             Map<String, Object> map = new HashMap<>();
@@ -140,8 +135,8 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
 
         // Build order data
         Map<String, Object> order = new HashMap<>();
-        String customerId = FirebaseAuth.getInstance().getUid(); // 🔹 real Firebase user ID
-        if (customerId == null) customerId = "guest"; // fallback
+        String customerId = FirebaseAuth.getInstance().getUid();
+        if (customerId == null) customerId = "guest";
         order.put("customerId", customerId);
         order.put("items", itemsList);
         order.put("totalPrice", totalPrice);
@@ -152,20 +147,18 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
         deliveryLocation.put("address", getAddressFromLatLng(selectedLatLng));
         order.put("deliveryLocation", deliveryLocation);
 
-        // 🔹 TODO: dynamic nearest branch, for now hardcoded
-        order.put("branchId", "Colombo Branch");
+        order.put("branchId", "Colombo Branch"); // hardcoded for now
         order.put("status", "pending");
         order.put("createdAt", FieldValue.serverTimestamp());
 
         db.collection("orders")
                 .add(order)
                 .addOnSuccessListener(docRef -> {
-                    // ✅ Clear cart
                     CartManager.getInstance().clearCart();
 
                     Toast.makeText(this, "Order placed successfully! ✅", Toast.LENGTH_LONG).show();
 
-                    // Go to Delivery screen
+                    // Go to Delivery Progress screen
                     Intent i = new Intent(LocationSelectActivity.this, DeliveryProgressActivity.class);
                     i.putExtra("customer_lat", selectedLatLng.latitude);
                     i.putExtra("customer_lng", selectedLatLng.longitude);
@@ -216,8 +209,10 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
         goToMyLocation();
     }
 
+    // ✅ This method fixes the "cannot resolve" error
     private void goToMyLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQ_LOCATION_PERMISSION);
             return;
@@ -273,9 +268,7 @@ public class LocationSelectActivity extends FragmentActivity implements OnMapRea
                                            @NonNull int[] grantResults) {
         if (requestCode == REQ_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (mMap != null) {
-                    enableMyLocationAndCenter();
-                }
+                if (mMap != null) enableMyLocationAndCenter();
             } else {
                 Toast.makeText(this, "Location permission required to show your position.", Toast.LENGTH_SHORT).show();
             }

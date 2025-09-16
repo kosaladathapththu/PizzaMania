@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kosala.pizza_mania.R;
+import com.kosala.pizza_mania.database.CartDatabaseHelper;
 import com.kosala.pizza_mania.models.CartItem;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -23,11 +24,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private final List<CartItem> cartList;
     private final Runnable refreshCallback;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final CartDatabaseHelper dbHelper;
 
     public CartAdapter(Context context, List<CartItem> cartList, Runnable refreshCallback) {
         this.context = context;
         this.cartList = cartList;
         this.refreshCallback = refreshCallback;
+        this.dbHelper = new CartDatabaseHelper(context);
     }
 
     @NonNull
@@ -48,37 +51,54 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         // Increase quantity
         holder.btnIncrease.setOnClickListener(v -> {
             int newQty = item.getQuantity() + 1;
+
+            // Update SQLite
+            dbHelper.updateQuantity(item.getName(), newQty);
+
+            // Update Firestore
             db.collection("cart").document(item.getName())
                     .update("quantity", newQty)
                     .addOnSuccessListener(aVoid -> refreshCallback.run())
-                    .addOnFailureListener(e -> Toast.makeText(context, "Failed to update quantity", Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> Toast.makeText(context, "Failed to update Firestore", Toast.LENGTH_SHORT).show());
         });
 
         // Decrease quantity
         holder.btnDecrease.setOnClickListener(v -> {
             int newQty = item.getQuantity() - 1;
             if (newQty <= 0) {
+                // Delete from SQLite
+                dbHelper.deleteItem(item.getName());
+
+                // Delete from Firestore
                 db.collection("cart").document(item.getName())
                         .delete()
                         .addOnSuccessListener(aVoid -> refreshCallback.run())
-                        .addOnFailureListener(e -> Toast.makeText(context, "Failed to remove item", Toast.LENGTH_SHORT).show());
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed to remove from Firestore", Toast.LENGTH_SHORT).show());
             } else {
+                // Update SQLite
+                dbHelper.updateQuantity(item.getName(), newQty);
+
+                // Update Firestore
                 db.collection("cart").document(item.getName())
                         .update("quantity", newQty)
                         .addOnSuccessListener(aVoid -> refreshCallback.run())
-                        .addOnFailureListener(e -> Toast.makeText(context, "Failed to update quantity", Toast.LENGTH_SHORT).show());
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed to update Firestore", Toast.LENGTH_SHORT).show());
             }
         });
 
         // Delete item
         holder.btnDelete.setOnClickListener(v -> {
+            // Delete from SQLite
+            dbHelper.deleteItem(item.getName());
+
+            // Delete from Firestore
             db.collection("cart").document(item.getName())
                     .delete()
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(context, item.getName() + " removed", Toast.LENGTH_SHORT).show();
                         refreshCallback.run();
                     })
-                    .addOnFailureListener(e -> Toast.makeText(context, "Failed to remove item", Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> Toast.makeText(context, "Failed to remove from Firestore", Toast.LENGTH_SHORT).show());
         });
     }
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -53,8 +52,8 @@ public class CartDatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // --- SQLite CRUD Methods ---
-    public void addToCart(CartItem item) {
+    // 🔹 Insert or update item (same as addToCart, but reusable)
+    public void insertOrUpdateCartItem(CartItem item) {
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_CART,
                 new String[]{COLUMN_QUANTITY},
@@ -65,7 +64,7 @@ public class CartDatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null && cursor.moveToFirst()) {
             int oldQty = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_QUANTITY));
             ContentValues values = new ContentValues();
-            values.put(COLUMN_QUANTITY, oldQty + item.getQuantity());
+            values.put(COLUMN_QUANTITY, item.getQuantity()); // overwrite with latest qty
             db.update(TABLE_CART, values, COLUMN_NAME + "=?", new String[]{item.getName()});
         } else {
             ContentValues values = new ContentValues();
@@ -79,6 +78,14 @@ public class CartDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    // 🔹 Delete one item by name
+    public void deleteCartItem(String name) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_CART, COLUMN_NAME + "=?", new String[]{name});
+        db.close();
+    }
+
+    // 🔹 Get all items
     public List<CartItem> getAllCartItems() {
         List<CartItem> list = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -98,6 +105,7 @@ public class CartDatabaseHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    // 🔹 Get total price
     public double getTotalPrice() {
         double total = 0;
         SQLiteDatabase db = getReadableDatabase();
@@ -110,13 +118,14 @@ public class CartDatabaseHelper extends SQLiteOpenHelper {
         return total;
     }
 
+    // 🔹 Clear all items
     public void clearCart() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_CART, null, null);
         db.close();
     }
 
-    // --- Firestore Integration ---
+    // 🔹 Push order to Firestore
     public void pushCartToFirestore(@NonNull Map<String, Object> deliveryLocation,
                                     @NonNull String branchId,
                                     @NonNull Runnable onSuccess,
@@ -124,7 +133,6 @@ public class CartDatabaseHelper extends SQLiteOpenHelper {
 
         List<CartItem> cartItems = getAllCartItems();
         if (cartItems.isEmpty()) {
-            Toast.makeText(context, "Cart is empty ❌", Toast.LENGTH_SHORT).show();
             onFailure.run();
             return;
         }

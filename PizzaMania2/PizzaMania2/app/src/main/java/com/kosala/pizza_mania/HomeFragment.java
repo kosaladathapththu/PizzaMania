@@ -38,6 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.kosala.pizza_mania.adapters.RecommendedMenuAdapter;
 import com.kosala.pizza_mania.adapters.CategoryAdapter;
 import com.kosala.pizza_mania.models.Branch;
+import com.kosala.pizza_mania.models.CartItem;
 import com.kosala.pizza_mania.models.Pizza;
 import com.kosala.pizza_mania.models.Category;
 
@@ -179,7 +180,9 @@ public class HomeFragment extends Fragment {
 
         btnAddToCart.setOnClickListener(v -> {
             // ✅ Add to CartHelper instead of just Toast
-            CartHelper.addToCart(pizza);
+            // Fixed version
+            CartHelper.addToCart(requireContext(), pizza);
+
             Toast.makeText(getContext(), pizza.getName() + " added to cart!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });

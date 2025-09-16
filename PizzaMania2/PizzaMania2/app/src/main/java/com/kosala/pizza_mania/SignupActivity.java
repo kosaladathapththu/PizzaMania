@@ -22,8 +22,9 @@ import java.util.Map;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private TextInputEditText etEmail, etPassword;
-    private TextInputLayout tilEmail, tilPassword;
+    // 🔹 Declare all fields
+    private TextInputEditText etName, etTel, etAddress, etEmail, etPassword;
+    private TextInputLayout tilName, tilTel, tilAddress, tilEmail, tilPassword;
     private MaterialButton btnSignup;
     private TextView btnGoToLogin;
     private ProgressBar progressBar;
@@ -50,16 +51,26 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    // 🔹 Init Views
     private void initViews() {
+        etName = findViewById(R.id.etName);
+        etTel = findViewById(R.id.etTel);
+        etAddress = findViewById(R.id.etAddress);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
+
+        tilName = findViewById(R.id.tilName);
+        tilTel = findViewById(R.id.tilTel);
+        tilAddress = findViewById(R.id.tilAddress);
         tilEmail = findViewById(R.id.tilEmail);
         tilPassword = findViewById(R.id.tilPassword);
+
         btnSignup = findViewById(R.id.btnSignup);
         btnGoToLogin = findViewById(R.id.btnGoToLogin);
         progressBar = findViewById(R.id.progressBar);
     }
 
+    // 🔹 Listeners
     private void setupClickListeners() {
         btnSignup.setOnClickListener(v -> {
             if (validateInputs()) registerUser();
@@ -71,20 +82,45 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    // 🔹 Validate all inputs
     private boolean validateInputs() {
+        String name = etName.getText().toString().trim();
+        String tel = etTel.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
+        tilName.setError(null);
+        tilTel.setError(null);
+        tilAddress.setError(null);
         tilEmail.setError(null);
         tilPassword.setError(null);
 
         boolean isValid = true;
 
+        if (TextUtils.isEmpty(name)) {
+            tilName.setError("Name is required");
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(tel)) {
+            tilTel.setError("Telephone is required");
+            isValid = false;
+        } else if (!tel.matches("\\d{10,15}")) {
+            tilTel.setError("Enter valid phone number");
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(address)) {
+            tilAddress.setError("Address is required");
+            isValid = false;
+        }
+
         if (TextUtils.isEmpty(email)) {
             tilEmail.setError("Email is required");
             isValid = false;
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail.setError("Please enter a valid email address");
+            tilEmail.setError("Enter valid email address");
             isValid = false;
         }
 
@@ -95,13 +131,14 @@ public class SignupActivity extends AppCompatActivity {
             tilPassword.setError("Password must be at least 6 characters");
             isValid = false;
         } else if (!password.matches(".*[a-zA-Z].*") || !password.matches(".*[0-9].*")) {
-            tilPassword.setError("Password should contain letters and numbers");
+            tilPassword.setError("Password must contain letters and numbers");
             isValid = false;
         }
 
         return isValid;
     }
 
+    // 🔹 Register user
     private void registerUser() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
@@ -129,14 +166,26 @@ public class SignupActivity extends AppCompatActivity {
                 });
     }
 
+    // 🔹 Save user info to Firestore
     private void saveUserToFirestore(String uid, String email) {
+        String name = etName.getText().toString().trim();
+        String tel = etTel.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
+
         Map<String, Object> userData = new HashMap<>();
+        userData.put("name", name);
+        userData.put("tel", tel);
+        userData.put("address", address);
         userData.put("email", email);
-        userData.put("role", "customer"); // Default role
+        userData.put("role", "customer");
 
         db.collection("users")
                 .document(uid)
-                .set(userData);
+                .set(userData)
+                .addOnSuccessListener(aVoid ->
+                        Toast.makeText(this, "User saved!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to save user: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void handleRegistrationError(Exception exception) {
