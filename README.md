@@ -27,7 +27,10 @@ Database: Firebase Firestore
 UI/UX: Material Design Components
 
 🎨 Screenshots
-Home Cart Checkout
+Home	Cart	Checkout
+
+	
+	
 
 (Replace these images with your actual app screenshots)
 
@@ -35,7 +38,8 @@ Home Cart Checkout
 
 Clone the repo:
 
-git clone https://github.com/kosaladathapththu/PizzaMania.git
+git clone (https://github.com/kosaladathapththu/PizzaMania).git
+
 
 Open in Android Studio.
 
@@ -76,7 +80,7 @@ Kosala Daneshwara Athapaththu (Developer)
 
 This project is licensed under the MIT License.
 See the LICENSE
-file for more information.
+ file for more information.
 
 📞 Contact
 
