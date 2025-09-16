@@ -134,6 +134,9 @@ Browse delicious pizzas, add them to your cart, and place orders with ease. Buil
 | Role | Name | GitHub | LinkedIn |
 |------|------|--------|----------|
 | **Lead Developer** | Kosala Daneshwara Athapaththu | [@kosaladathapththu](https://github.com/kosaladathapththu) | [LinkedIn](https://www.linkedin.com/in/kosala-d-athapaththu-a453b9248/) |
+| **Front-end Developer** | viraj Viduranga | [@VirajViduranga](https://github.com/virajViduranga) | [LinkedIn]((https://www.linkedin.com/in/viraj-viduranga-9b5086344/)) |
+| **Developer** | Bumesh sathnidu | [@Bimesh](https://github.com/bimesh637) | [LinkedIn]((https://www.linkedin.com/in/bimesh-sathnidu-1442b0303/)) |
+| **Developer** | Dulmina | [@dulmina](https://github.com/) | [LinkedIn](((https://www.linkedin.com/in/dulmina-kulasekara-14042a24a/))) |
 
 </div>
 
