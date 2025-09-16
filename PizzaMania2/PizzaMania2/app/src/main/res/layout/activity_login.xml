@@ -24,27 +24,27 @@
         android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pizza Mania"
-        android:textSize="28sp"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/ivLogo"
+        android:text="Pizza Mania"
+        android:textColor="#F44336"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/ivLogo" />
 
     <!-- Welcome -->
     <TextView
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome back!"
-        android:textSize="16sp"
-        android:textColor="#CCFFFFFF"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tvAppName"
+        android:text="Welcome back!"
+        android:textColor="#FF9800"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/tvAppName" />
 
     <!-- Form Card -->
     <androidx.cardview.widget.CardView
@@ -142,8 +142,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Don't have an account? "
-            android:textSize="14sp"
-            android:textColor="#CCFFFFFF"/>
+            android:textColor="#CC504F4F"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/btnGoToSignup"
