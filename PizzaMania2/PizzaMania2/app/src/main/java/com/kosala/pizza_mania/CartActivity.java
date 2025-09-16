@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.kosala.pizza_mania.adapters.CartAdapter;
@@ -29,6 +31,7 @@ public class CartActivity extends AppCompatActivity {
     private List<CartItem> cartItems = new ArrayList<>();
 
     private FirebaseFirestore db;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class CartActivity extends AppCompatActivity {
         rvCart.setLayoutManager(new LinearLayoutManager(this));
 
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance(); // ✅ Initialize FirebaseAuth
 
         loadCartItemsFromFirestore();
 
@@ -50,6 +54,9 @@ public class CartActivity extends AppCompatActivity {
                 Toast.makeText(this, "Cart is empty!", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            // ✅ Get current user ID or "guest"
+            String customerId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : "guest";
 
             // 1️⃣ Prepare order data
             List<Map<String, Object>> itemsList = new ArrayList<>();
@@ -65,20 +72,24 @@ public class CartActivity extends AppCompatActivity {
                 itemsList.add(map);
             }
 
+            // 2️⃣ Create order map
             Map<String, Object> order = new HashMap<>();
+            order.put("customerId", customerId); // ✅ Add customer ID
             order.put("items", itemsList);
             order.put("totalPrice", totalPrice);
+            order.put("status", "pending"); // default status
+            order.put("createdAt", FieldValue.serverTimestamp());
 
-            // 2️⃣ Save order to Firestore
+            // 3️⃣ Save order to Firestore
             db.collection("orders")
                     .add(order)
                     .addOnSuccessListener(documentReference -> {
-                        Toast.makeText(this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Order placed successfully! ✅", Toast.LENGTH_SHORT).show();
 
-                        // 3️⃣ Clear cart
+                        // Clear cart after placing order
                         clearCart();
 
-                        // 4️⃣ Go to CheckoutActivity
+                        // Go to CheckoutActivity (or you can go to DeliveryProgressActivity)
                         Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
                         startActivity(intent);
                     })
@@ -131,7 +142,7 @@ public class CartActivity extends AppCompatActivity {
                         doc.getReference().delete();
                     }
                     cartItems.clear();
-                    adapter.notifyDataSetChanged();
+                    if (adapter != null) adapter.notifyDataSetChanged();
                     updateTotal();
                 });
     }

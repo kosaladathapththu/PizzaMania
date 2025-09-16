@@ -1,6 +1,7 @@
 package com.kosala.pizza_mania;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,9 +31,16 @@ public class SettingsFragment extends Fragment {
         Button btnEditProfile = view.findViewById(R.id.btnEditProfile);
         Button btnChangePassword = view.findViewById(R.id.btnChangePassword);
         Button btnLogout = view.findViewById(R.id.btnLogout);
+        Button btnMyOrders = view.findViewById(R.id.btnMyOrders); // 🔹 new button
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // 🔹 My Orders
+        btnMyOrders.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MyOrdersActivity.class);
+            startActivity(intent);
+        });
 
         // 🔹 Edit Profile
         btnEditProfile.setOnClickListener(v -> {
@@ -41,7 +49,6 @@ public class SettingsFragment extends Fragment {
                 return;
             }
 
-            // Create Dialog
             View dialogView = LayoutInflater.from(getActivity())
                     .inflate(R.layout.dialog_edit_profile, null);
 
@@ -49,7 +56,7 @@ public class SettingsFragment extends Fragment {
             EditText etTel = dialogView.findViewById(R.id.etTel);
             EditText etAddress = dialogView.findViewById(R.id.etAddress);
 
-            // Load current values
+            // Load current profile
             db.collection("users").document(auth.getUid())
                     .get()
                     .addOnSuccessListener(snapshot -> {
@@ -60,7 +67,7 @@ public class SettingsFragment extends Fragment {
                         }
                     });
 
-            AlertDialog dialog = new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(getActivity())
                     .setTitle("Edit Profile")
                     .setView(dialogView)
                     .setPositiveButton("Save", (d, which) -> {
@@ -81,19 +88,22 @@ public class SettingsFragment extends Fragment {
                         DocumentReference userRef = db.collection("users").document(auth.getUid());
                         userRef.update(updates)
                                 .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(),
-                                        "Profile updated", Toast.LENGTH_SHORT).show())
+                                        "Profile updated ✅", Toast.LENGTH_SHORT).show())
                                 .addOnFailureListener(e -> Toast.makeText(getActivity(),
                                         "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     })
                     .setNegativeButton("Cancel", null)
-                    .create();
-
-            dialog.show();
+                    .show();
         });
 
         // 🔹 Change Password
         btnChangePassword.setOnClickListener(v -> {
-            String email = auth.getCurrentUser() != null ? auth.getCurrentUser().getEmail() : null;
+            if (auth.getCurrentUser() == null) {
+                Toast.makeText(getActivity(), "No user logged in", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String email = auth.getCurrentUser().getEmail();
             if (email != null) {
                 auth.sendPasswordResetEmail(email)
                         .addOnCompleteListener(task -> {
@@ -107,15 +117,18 @@ public class SettingsFragment extends Fragment {
                                         Toast.LENGTH_LONG).show();
                             }
                         });
-            } else {
-                Toast.makeText(getActivity(), "No user logged in", Toast.LENGTH_SHORT).show();
             }
         });
 
         // 🔹 Logout
         btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
+            auth.signOut();
             Toast.makeText(getActivity(), "Logged out", Toast.LENGTH_SHORT).show();
+
+            // Redirect to login
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             requireActivity().finish();
         });
 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/order_item_bg"
+    android:elevation="3dp">
+
+    <!-- Order items -->
+    <TextView
+        android:id="@+id/tvItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pizza x1 - Rs.1200"
+        android:textSize="16sp"
+        android:textColor="#222"
+        android:layout_marginBottom="6dp"/>
+
+    <!-- Branch -->
+    <TextView
+        android:id="@+id/tvBranch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Branch: Colombo"
+        android:textSize="14sp"
+        android:textColor="#555"
+        android:layout_marginBottom="6dp"/>
+
+    <!-- Status -->
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status: Pending"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="#3FD70B"/> <!-- Orange for pending -->
+
+    <Button
+        android:id="@+id/btnAddReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Review"
+        android:layout_marginTop="8dp"/>
+
+
+
+</LinearLayout>

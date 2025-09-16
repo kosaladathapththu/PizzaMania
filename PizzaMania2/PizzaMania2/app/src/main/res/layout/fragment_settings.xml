@@ -41,6 +41,18 @@
         android:layout_marginBottom="16dp" />
 
     <Button
+        android:id="@+id/btnMyOrders"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:backgroundTint="#FFA000"
+        android:text="🛒 My Orders"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+
+    <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -49,4 +61,7 @@
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
+
+
+
 </LinearLayout>

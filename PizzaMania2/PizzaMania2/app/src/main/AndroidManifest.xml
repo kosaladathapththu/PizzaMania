@@ -58,6 +58,8 @@
         <activity android:name=".UpdatePizzaActivity" />
 
         <activity android:name=".ManageOrdersActivity" />
+        <activity android:name=".MyOrdersActivity" />
+
 
 
 
