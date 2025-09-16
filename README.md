@@ -1,93 +1,202 @@
-🍕 Pizza Mania App
+# 🍕 Pizza Mania App
 
-Pizza Mania is an interactive Android app for pizza lovers! Users can browse delicious pizzas, add them to their cart, and place orders easily. Built with Java and Firebase, this app provides a smooth and engaging user experience.
+<div align="center">
 
-📌 Features
+![Pizza Mania Logo](https://img.shields.io/badge/Pizza-Mania-FF6B35?style=for-the-badge&logo=android&logoColor=white)
 
-🍕 Browse Pizzas: View all available pizzas with images, descriptions, and prices.
+**An interactive Android app for pizza lovers!** 
 
-🛒 Add to Cart: Add multiple items to the cart before checkout.
+Browse delicious pizzas, add them to your cart, and place orders with ease. Built with Java and Firebase for a smooth and engaging user experience.
 
-💳 Place Orders: Securely place orders from the app.
+[![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/)
+[![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)](https://www.java.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
 
-🔍 Search Pizzas: Quickly search for your favorite pizza by name.
+</div>
 
-📦 Firestore Integration: Real-time database to store menu and cart items.
+---
 
-📱 User-Friendly Interface: Simple, modern, and responsive UI.
+## 📌 Features
 
-🛠 Tech Stack
+| Feature | Description |
+|---------|-------------|
+| 🍕 **Browse Pizzas** | View all available pizzas with images, descriptions, and prices |
+| 🛒 **Smart Cart** | Add multiple items to cart before checkout |
+| 💳 **Secure Orders** | Place orders securely from the app |
+| 🔍 **Quick Search** | Find your favorite pizza by name instantly |
+| 📦 **Real-time Data** | Firebase Firestore integration for live updates |
+| 📱 **Modern UI** | Clean, responsive design with Material Components |
 
-Language: Java
+---
 
-Platform: Android Studio
+## 🛠 Tech Stack
 
-Database: Firebase Firestore
+<div align="center">
 
-UI/UX: Material Design Components
+| Category | Technologies |
+|----------|-------------|
+| **Language** | ![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=java&logoColor=white) |
+| **Platform** | ![Android Studio](https://img.shields.io/badge/Android_Studio-3DDC84?style=flat-square&logo=android-studio&logoColor=white) |
+| **Database** | ![Firebase](https://img.shields.io/badge/Firebase_Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black) |
+| **UI/UX** | ![Material Design](https://img.shields.io/badge/Material_Design-757575?style=flat-square&logo=material-design&logoColor=white) |
 
-🎨 Screenshots
-Home	Cart	Checkout
+</div>
 
-	
-	
+---
 
-(Replace these images with your actual app screenshots)
+## 🎨 Screenshots
 
-🚀 Installation
+<div align="center">
 
-Clone the repo:
+| Home Screen | Cart View | Checkout |
+|:-----------:|:---------:|:--------:|
+| <img src="screenshots/home.png" width="200" alt="Home Screen"/> | <img src="screenshots/cart.png" width="200" alt="Cart View"/> | <img src="screenshots/checkout.png" width="200" alt="Checkout"/> |
 
-git clone (https://github.com/kosaladathapththu/PizzaMania).git
+*Replace with your actual app screenshots*
 
+</div>
 
-Open in Android Studio.
+---
 
-Sync the project with Gradle.
+## 🚀 Getting Started
 
-Run the app on an emulator or Android device.
+### Prerequisites
+- Android Studio Arctic Fox or later
+- JDK 8 or higher
+- Android SDK (API level 21+)
+- Firebase account
 
-Ensure Firebase configuration is set up properly in google-services.json.
+### Installation
 
-🔗 Firebase Setup
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/kosaladathapththu/PizzaMania.git
+   cd PizzaMania
+   ```
 
-Create a new Firebase project at Firebase Console
-.
+2. **Open in Android Studio**
+   - Launch Android Studio
+   - Select "Open an existing project"
+   - Navigate to the cloned folder
 
-Add your Android app to the project.
+3. **Sync the project**
+   - Wait for Gradle sync to complete
+   - Resolve any dependency issues if prompted
 
-Download google-services.json and place it in app/ folder.
+4. **Run the app**
+   - Connect an Android device or start an emulator
+   - Click the "Run" button or press `Shift + F10`
 
-Enable Firestore and Authentication (if needed).
+---
 
-👥 Team Members
+## 🔥 Firebase Setup
 
-Kosala Daneshwara Athapaththu (Developer)
+<details>
+<summary>Click to expand Firebase configuration steps</summary>
 
-[Add your other team members here]
+### Step 1: Create Firebase Project
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Click "Create a project"
+3. Follow the setup wizard
 
-💡 Future Improvements
+### Step 2: Add Android App
+1. Click "Add app" and select Android
+2. Enter your package name: `com.yourpackage.pizzamania`
+3. Download `google-services.json`
 
-🍕 Multiple payment gateways
+### Step 3: Configure Project
+1. Place `google-services.json` in the `app/` directory
+2. Enable Firestore Database
+3. Set up Authentication (if required)
 
-📦 Order tracking system
+### Step 4: Database Structure
+```json
+{
+  "pizzas": {
+    "pizza_id": {
+      "name": "Margherita",
+      "price": 12.99,
+      "description": "Fresh tomatoes, mozzarella, basil",
+      "image_url": "https://..."
+    }
+  }
+}
+```
 
-🌐 Admin panel for managing pizzas
+</details>
 
-💬 User reviews and ratings
+---
 
-📄 License
+## 👥 Team
 
-This project is licensed under the MIT License.
-See the LICENSE
- file for more information.
+<div align="center">
 
-📞 Contact
+| Role | Name | GitHub | LinkedIn |
+|------|------|--------|----------|
+| **Lead Developer** | Kosala Daneshwara Athapaththu | [@kosaladathapththu](https://github.com/kosaladathapththu) | [LinkedIn](https://www.linkedin.com/in/kosala-d-athapaththu-a453b9248/) |
 
-Email: kosalaathapaththu1234@gmail.com
+</div>
 
-GitHub: https://github.com/kosaladathapththu
+---
 
-LinkedIn: https://www.linkedin.com/in/kosala-d-athapaththu-a453b9248/
+## 🎯 Roadmap
 
-✨ Built with ❤️ by Kosala Daneshwara Athapaththu
+- [x] Basic pizza browsing functionality
+- [x] Cart management system
+- [x] Order placement feature
+- [x] Firebase integration
+- [ ] 💳 Multiple payment gateways
+- [ ] 📦 Real-time order tracking
+- [ ] 🌐 Admin panel for pizza management
+- [ ] ⭐ User reviews and ratings system
+- [ ] 🔔 Push notifications
+- [ ] 🎨 Dark mode support
+
+---
+
+## 📊 Project Stats
+
+![GitHub repo size](https://img.shields.io/github/repo-size/kosaladathapththu/PizzaMania?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/kosaladathapththu/PizzaMania?style=flat-square)
+![GitHub stars](https://img.shields.io/github/stars/kosaladathapththu/PizzaMania?style=flat-square)
+![GitHub forks](https://img.shields.io/github/forks/kosaladathapththu/PizzaMania?style=flat-square)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📞 Contact & Support
+
+<div align="center">
+
+[![Email](https://img.shields.io/badge/Email-kosalaathapaththu1234@gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:kosalaathapaththu1234@gmail.com)
+[![GitHub](https://img.shields.io/badge/GitHub-kosaladathapththu-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/kosaladathapththu)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Kosala%20Athapaththu-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kosala-d-athapaththu-a453b9248/)
+
+</div>
+
+---
+
+<div align="center">
+
+### ✨ Built with ❤️ by [Kosala Daneshwara Athapaththu](https://github.com/kosaladathapththu)
+
+**⭐ If you found this project helpful, please give it a star!**
+
+</div>
